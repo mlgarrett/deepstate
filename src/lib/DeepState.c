@@ -24,6 +24,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int DeepState_IntDefault(int val);
+
 #ifdef DEEPSTATE_TAKEOVER_RAND
 #undef rand
 #undef srand
@@ -601,6 +603,19 @@ int64_t DeepState_Int64(void) {
 MAKE_SYMBOL_FUNC(UInt, unsigned)
 int DeepState_Int(void) {
   return (int) DeepState_UInt();
+}
+
+//MAKE_SYMBOL_FUNC(Int, signed)
+int DeepState_IntDefault(int val)
+{
+  if(val)
+  {
+	  return val;
+  }
+  else
+  {
+	  return 0;
+  }
 }
 
 MAKE_SYMBOL_FUNC(UShort, unsigned short)
