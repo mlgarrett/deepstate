@@ -101,6 +101,8 @@ enum {
   DeepState_InputSize = DEEPSTATE_SIZE
 };
 
+int DeepState_IntDefault(int val);
+
 
 /* Byte buffer that will contain symbolic data that is used to supply requests
  * for symbolic values (e.g. `int`s). */

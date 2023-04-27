@@ -24,8 +24,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int DeepState_IntDefault(int val);
-
 #ifdef DEEPSTATE_TAKEOVER_RAND
 #undef rand
 #undef srand
@@ -608,13 +606,13 @@ int DeepState_Int(void) {
 //MAKE_SYMBOL_FUNC(Int, signed)
 int DeepState_IntDefault(int val)
 {
-  if(val)
+  if(DeepState_UsingSymExec || DeepState_InputIndex < DeepState_InputInitialized || DeepState_InternalFuzzing)
   {
-	  return val;
+	  return DeepState_Int();
   }
   else
   {
-	  return 0;
+	  return val;
   }
 }
 
