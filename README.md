@@ -20,6 +20,7 @@ Table of Contents
      * [Supported Platforms](#supported-platforms)
      * [Dependencies](#dependencies)
      * [Building on Ubuntu 18.04 (Bionic)](#building-on-ubuntu-1804-bionic)
+     * [Building on Windows 10](#building-on-windows-10)
      * [Installing](#installing)
      * [Installation testing](#installation-testing)
      * [Docker](#docker)
@@ -38,7 +39,7 @@ docker pull agroce/deepstate_examples
 docker run -it agroce/deepstate_examples
 ```
 
-Then within the DeepState docker, go to an example:
+Then within the DeepState docker container, go to an example:
 ```shell
 cd ~/examples/fuzz_tcas
 deepstate-afl ./TCAS_AFL -o fuzz_afl --fuzzer_out --timeout 120
@@ -47,6 +48,12 @@ llvm-cov-9 gcov TCAS_driver.cpp  -b
 ```
 
 This runs the AFL fuzzer on the TCAS code (https://en.wikipedia.org/wiki/Traffic_collision_avoidance_system), a long-used example program in software testing.  After two minutes of fuzzing, we run a version of the test driver that collects code coverage, and see how much of the code AFL has managed to cover in two minutes.
+
+NOTE: You may need to modify `/proc/sys/kernel/core_pattern` on your host for AFL to run properly, e.g.:
+
+```shell
+echo core | sudo tee /proc/sys/kernel/core_pattern
+```
 
 Finally, we can look at the failing tests AFL produces:
 
@@ -96,7 +103,7 @@ deterministic settings such as regression testing or CI.
 
 ### Supported Platforms
 
-DeepState currently targets Linux, with macOS support in progress
+DeepState currently targets Linux, Windows, with macOS support in progress
 (the fuzzers work fine, but symbolic execution is not well-supported
 yet, without a painful cross-compilation process).
 
@@ -129,6 +136,22 @@ cmake ../
 make
 sudo make install
 ```
+
+### Building on Windows 10
+If you want to compile DeepState on Windows make sure to install MinGW with MSYS2 by following the [installation instructions](https://www.msys2.org/#installation). After the installation is finished, select an environment and launch that version of the environment from the Windows programs menu(if in doubt, choose MINGW64 or UCRT64). Then, use the command below to install all of your environment's dependencies and compile DeepState:
+```shell
+pacman -Syyu
+pacman -S mingw-w64-x86_64-python3 mingw-w64-x86_64-python-setuptools mingw-w64-x86_64-gcc mingw-w64-x86_64-cmake mingw-w64-x86_64-libffi mingw-w64-x86_64-make
+pacman -S make git
+
+git clone https://github.com/trailofbits/deepstate deepstate
+mkdir deepstate/build && cd deepstate/build
+cmake -G "Unix Makefiles" ../
+make
+make install
+```
+
+NOTE: If you decide to use UCRT64, keep in mind to change `x86_64` to `ucrt-x86_64` in the second pacman command, i.e. `mingw-w64-x86_64-python3` gets replaced with `mingw-w64-ucrt-x86_64-python3`.
 
 ### Installing
 
